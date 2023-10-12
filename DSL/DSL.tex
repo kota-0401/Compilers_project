@@ -1,0 +1,440 @@
+
+\documentclass[12pt]{fphw}
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{mathpazo} % Use the Palatino font
+
+\usepackage{graphicx} % Required for including images
+
+\usepackage{booktabs} % Required for better horizontal rules in tables
+
+\usepackage{listings} % Required for insertion of code
+
+\usepackage{amsmath}
+
+\usepackage{amsthm}
+
+\usepackage{amssymb}
+
+\usepackage{enumerate} % To modify the enumerate environment
+
+\title{CONSI}
+
+
+\begin{document}
+
+\begin{titlepage} % Suppresses headers and footers on the title page
+
+	\centering % Centre everything on the title page
+	
+	\scshape % Use small caps for all text on the title page
+	
+	\vspace*{\baselineskip} % White space at the top of the page
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt} % Thick horizontal rule
+	\rule{\textwidth}{0.4pt} % Thin horizontal rule
+	
+	\vspace{0.75\baselineskip} % Whitespace above the title
+	
+	{\Large CONSI\\
+  \large Language Specification Document} % Title
+	
+	\vspace{0.75\baselineskip} % Whitespace below the title
+	
+	\rule{\textwidth}{0.4pt}\vspace*{-\baselineskip}\vspace{3.2pt} % Thin horizontal rule
+	\rule{\textwidth}{1.6pt} % Thick horizontal rule
+	
+	\vspace{2\baselineskip} % Whitespace after the title block
+ 
+	DOMAIN SPECIFIC LANGUAGE NAME :  CONSI\\
+DOMAIN SPECIFIC LANGUAGE ON       :  CONIC SECTIONS
+	
+	\vspace*{3\baselineskip} % Whitespace under the subtitle
+
+	Team Members :
+	
+	\vspace{0.5\baselineskip} % Whitespace before the editors
+	
+	{\textbf{VIGNAN KOTA} -- CS21BTECH11029\\
+\textbf{N SREE HARSHA} -- CS21BTECH11042\\
+\textbf{DAVID MALOTH} -- CS21BTECH11035}\\
+\textbf{BURRA VISHAL MATHEWS} -- CS21BTECH11010\\
+
+	
+	\vspace{0.5\baselineskip} % Whitespace below the editor list
+	
+	\textit{Indian Institute of Technology\\Hyderabad} % Editor affiliation
+	
+	\vfill % Whitespace between editor names and publisher logo
+
+	
+	\vspace{0.3\baselineskip} % Whitespace under the publisher logo
+	
+
+\end{titlepage}
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{What is CONSI?}
+CONSI, also known as "Conic Section DSL," is a language created to simplify the manipulation and analysis of conic sections. These conic sections are shapes like circles, parabolas, ellipses, and hyperbolas widely used in mathematics, physics, engineering, and various scientific fields for practical applications.
+
+The main goal of the CONSI DSL is to make working with these shapes easier by abstracting their complexities and providing an interface. This language offers users data types such as POINT, LINE, CIRCLE, PARABOLA, ELLIPSE, and HYPERBOLA. Additionally, it offers a range of operations and properties that enable users to perform tasks. Some examples include checking if a point lies on a section, obtaining the equation of the section itself, calculating eccentricity values, determining tangent equations at specific points on the conic section curve, or finding normal equations at given points.
+
+\subsection{CONSI Uses}
+Since C/Cpp does not have a dedicated library for conic sections we have created a dsl solely for the usage of conic sections. 
+\begin{itemize}
+    \item Using a new data type named ‘point’ to represent points. 
+    \item We are trying to implement 4 types of commonly used conic sections and they are, Circles, Parabolas, Ellipses, and Hyperbolas. 
+    \item Users can create instances of these conic sections.
+The CONSI DSL offers a variety of functions that allow users to retrieve and analyze the characteristics of sections. 
+\item These functions include finding equations, calculating eccentricity, determining the equation at a point and finding the normal equation, for a given point, on the conic section.
+\item CONSI DSL provides advanced analysis tools for conic sections, such as determining the focal length, vertex, and axis of symmetry for ellipses and hyperbolas.
+\item These features go beyond basic properties and facilitate in-depth exploration of conic sections.
+\end{itemize}
+
+\section{Lexical Conventions}
+
+\subsection{Comments}
+The comments in this language follow the general C comment syntax. 
+\begin{itemize}
+    \item With the line ending comments starting with two forward slashes.\\
+   Ex. 2.1:     
+// This is a valid comment 
+\item MultiLine comments are written in the following way “/* Matter */”. \\
+   Ex. 2.2: 
+ /* This is a valid
+ multiline comment */
+\item  Nested comments and comments between strings are not allowed.\\
+   Ex. 2.3: 
+ /* Comments cannot be $* nested *$ like this */
+\end{itemize}
+
+\subsection{Whitespaces}
+
+\begin{itemize}
+    \item WhiteSpace characters that are not matched in any regex of the grammar are ignored.
+    \item "\texttt{\textbackslash t}" is used for a single tab-space, while "\texttt{\textbackslash n}" is used for new lines in string literals, similar to C.
+\end{itemize}
+
+Both of the programs in Example 2.4 and 2.5 below are equivalent:
+
+\begin{verbatim}
+Ex. 2.4
+void main ()
+{
+   int a = 1;
+   float b = 1.1;
+   point p = [1,b]; 
+}
+\end{verbatim}
+\begin{verbatim}
+Ex. 2.5
+void main()
+{int a = 1;
+float b = 1.1;
+point p = [1,b];}
+\end{verbatim}
+
+
+\subsection{Reserved Keywords}
+
+The following words are reserved keywords in CONSI and cannot be used as identifiers:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+if & int & point & NULL & else \\
+\hline
+float & line & return & break & char \\
+\hline
+circle & while & continue & string & ellipse \\
+\hline
+void & for & bool & parabola & hyperbola \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Identifiers}
+
+Identifiers in our language need to follow certain rules, and they are:
+\begin{itemize}
+    \item The identifier should start with a letter (both capital and small included).
+    \item Then any of the following can be used:
+    \begin{itemize}
+        \item Another character.
+        \item Another underscore.
+        \item Digit.
+    \end{itemize}
+\end{itemize}
+
+The Regular Expression for the identifier is given as follows: \texttt{[a-zA-Z]\_0-9a-zA-Z]*}.\\
+
+\texttt{foo}, \texttt{x\_1}, \texttt{x1} are valid identifiers.
+
+\texttt{1x}, \texttt{\_x1} are not valid identifiers.
+
+
+\subsection{Punctuators}
+Punctuation Statements should be terminated with a semicolon (;)
+
+\section{Data Types}
+
+\subsection{Basic Data Types}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+Datatype Name & Description & Initialization \\
+\hline
+int & integer value & \texttt{int x = 9;} \\
+\hline
+float & floating-point number & \texttt{float x = 10.1;} \\
+\hline
+string & sequence of characters & \texttt{string s1 = "Hello world";} \\
+\hline
+char & a character & \texttt{char c = '@';} \\
+ & & \texttt{char d = '1';} \\
+ \hline
+bool & stores either true or false & \texttt{bool a = true;} \\
+
+ & & \texttt{bool b = false;} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Conic Related Data Types}
+
+Using \texttt{[ ]} for declaring elements of a point and \texttt{\{ \}} for declaring elements of line, circle, parabola, hyperbola, ellipse, etc.
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+Datatype Name & Description & Initialization \\
+\hline
+point & stores two floating-point numbers & \texttt{point p = [1,2];} \\
+\hline
+line & stores a point  & \texttt{line a = \{[1,2], 3.1\};} \\
+& \& a floating-point number&\\
+\hline
+circle & stores a point  & \texttt{circle c = \{[0,0], 1\};} \\
+& \& a floating-point number&\\
+\hline
+parabola & stores a point & \texttt{parabola x = \{[0,0], a\};} \\
+& \& a line &\\
+\hline
+ellipse & stores a point & \texttt{ellipse y = \{[0,0], 1, 2\};} \\
+& \& two floating-point numbers &\\
+\hline
+hyperbola & stores a point & \texttt{hyperbola z = \{[0,0], 2, 3\};} \\
+&\& two floating-point numbers  &\\
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{Operators and Expressions}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+Purpose & Symbol & Associativity & Valid Operands \\
+\hline
+Parentheses for & ( ) & Left to right & int, float \\
+grouping of & & & \\
+operations & & & \\
+\hline
+Member access operators & . & Left to right & circle, parabola, \\
+&&&ellipse, hyperbola \\
+\hline
+Unary negation & NEG & Right to left & all bool \\
+\hline
+Increment & ++ & Right to left & int, float \\
+\hline
+Decrement & -- & Right to left & int, float \\
+\hline
+Exponent & \textasciicircum & Left to right & int, float \\
+\hline
+Modulo & \% & Left to right & int, float \\
+\hline
+Multiplication & * & Left to right & int, float \\
+\hline
+Division & / & Left to right & int, float \\
+\hline
+Addition & + & Left to right & int, float, string \\
+\hline
+Subtraction & - & Left to right & int, float \\
+\hline
+Bitwise Operators & |, \& & Left to right & - \\
+\hline
+Intersection & \& & Left to right & - \\
+\hline
+Relational operators & <=, <, >=, >, ==, != & Left to right & all datatypes \\
+\hline
+Assignment operators & =, *=, +=, /=, \^{}, \%= & Right to left & wherever the operator is valid \\
+\hline
+Logical operators & AND, OR & Left to right & bool \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Declarations}
+
+In a program, there are elements like variables, functions, and types. Before using any of these elements, it is necessary to declare them.
+
+\subsection{Variable Declaration}
+
+A variable declaration starts with the datatype name, followed by the variable name with initialization being optional. Multiple declarations can be separated by commas.
+
+\subsubsection*{Example 5.1}
+\begin{verbatim}
+int a = 5, b;
+\end{verbatim}
+
+\subsection{Function Declaration}
+
+A function declaration starts with the keyword \texttt{func}, followed by the return type enclosed within parentheses \texttt{()}. Then, the function name follows, containing similar syntax rules as an identifier. Inside the parentheses, function parameters with types and names, but without initialization, are specified.
+
+\subsubsection*{Example 5.2}
+\begin{verbatim}
+func (int) add (int a, int b);
+\end{verbatim}
+
+\subsection{Array Declaration}
+
+An array declaration is similar to a variable declaration, with differences in size and initialization. The size is specified in square brackets \texttt{[]} immediately after the identifier. Initialization can be done by enclosing values in curly braces \texttt{\{\}} separated by commas. The number of values should match the size if initialized.
+
+\subsubsection*{Example 5.3}
+\begin{verbatim}
+int a[10], b[5] = {1, 3, 5, 6, 19};
+\end{verbatim}
+
+\subsection{Declaration Scope}
+
+Declaration scope in CONSI is defined by \texttt{""}. Any variable, function, or array cannot be used outside of that scope. A variable that already exists in a larger scope cannot be redefined in a smaller scope, meaning they cannot have the same names.
+
+\subsubsection*{Example 5.4}
+\begin{verbatim}
+int a;
+int main() {
+    int a, b; // Here, 'a' cannot be redeclared in the local scope.
+}
+\end{verbatim}
+
+\subsection{Initializations}
+
+Every variable, when declared, is initialized to a default value. Variables can be assigned any value within the range of their datatype. The value to be assigned can also be an expression that results in a value.
+
+\subsubsection*{Example 5.5}
+\begin{verbatim}
+int a = 5, b;
+\end{verbatim}
+
+
+\section{Statements}
+
+Types of Statements in CONSI are:
+\begin{enumerate}
+    \item Labeled statements
+    \item Compound statements
+    \item Expression statements
+    \item Selection statements
+    \item Iteration statements
+\end{enumerate}
+
+\subsection{Labeled Statements}
+
+Labeled statements are used in switch statements. A simple identifier followed by a ":" is a label. For example, in switch statements, there are case and default labeled statements.
+
+\subsubsection*{Example 6.1}
+\begin{verbatim}
+case constant-expression : statement
+\end{verbatim}
+
+\subsection{Compound Statements}
+
+A compound statement is an optional list of declarations and an optional list of statements enclosed within braces.
+
+\subsubsection*{Example 6.2}
+\begin{verbatim}
+{
+    int a; // declaration
+    a = 5; // statement
+}
+\end{verbatim}
+
+\subsection{Expression Statements}
+
+An expression statement is an optional expression followed by a semicolon. If there is some expression, it might have a value. If there is no expression and just a semicolon, it is called an empty or null statement. Statements that have only a function call followed by a semicolon come under this category.
+
+Expressions in CONSI are valid sequences of operands and operators, where operands can be identifiers or constants on which operations are performed.
+
+\subsubsection*{Example 6.3}
+\begin{verbatim}
+a * 5 // Expression using a binary operator, operands are an identifier and a constant
+a + b // Expression using a binary operator, both operands are identifiers
+a >= 10 // Expression using a relational operator
+a /= 10 // Expression using a binary operator
+\end{verbatim}
+
+\subsection{Selection Statements}
+
+There are three types of selection statements in CONSI:
+
+1. \texttt{if (expression) statement}
+2. \texttt{if (expression) statement else statement}
+3. Switch statements are also a type of selection statements.
+
+\subsubsection*{Example 6.4}
+\begin{verbatim}
+switch (expression) statement
+\end{verbatim}
+
+\subsection{Iteration Statements}
+
+There are two types of iteration statements in CONSI:
+
+1. \textbf{While Loop}
+
+\subsubsection*{Example 6.5.1}
+\begin{verbatim}
+while (expression)
+{
+    // statements go here
+}
+\end{verbatim}
+
+2. \textbf{For Loop}
+
+\subsubsection*{Example 6.5.2}
+\begin{verbatim}
+for (initialization statement ; condition check expression ; update statement)
+{
+    // statements go here
+}
+\end{verbatim}
+
+3. \textbf{Range-Based For Loops}
+
+\subsubsection*{Example 6.5.3}
+\begin{verbatim}
+for (range declaration : range expression)
+{
+    // statements go here
+}
+\end{verbatim}
+
+\section{Inbuilt Utilities}
+We plan to implement some standard libraries/headers to provide support for the following domains:
+\begin{itemize}
+    \item conic operations
+\end{itemize}
+
+\end{document}
+
+\end{document}

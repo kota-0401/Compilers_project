@@ -19,10 +19,48 @@ int yyerror();
 %token HYPERBOLA
 %token ELLIPSE
 
+%token NULL_
+%token IF
+%token ELSE
+%token CONTINUE
+%token BREAK
+%token RETURN
+%token FOR
+%token WHILE
+%token PRINT
+
+%token EQUATION
+%token ECCENTRICITY
+%token TANGENT
+%token NORMAL
+%token IS_POINT
+%token CENTRE
+%token RADIUS
+%token XCOR
+%token YCOR
+%token SLOPE
+
 %start S
 
 %%
 /*productions*/
+S : function_declarations S
+  | function_definitions S
+  | dec_stmt S
+  | /*empty*/
+  ;
+
+function_declarations : data_type ID OBRACKET par_list CBRACKET SEMICOLON {fprintf(yyout," : function declaration");}
+                      | data_type ID OBRACKET CBRACKET SEMICOLON {fprintf(yyout," : function declaration");}
+                      | VOID ID OBRACKET par_list CBRACKET SEMICOLON {fprintf(yyout," : function declaration");}
+                      | VOID ID OBRACKET CBRACKET SEMICOLON {fprintf(yyout," : function declaration");}
+                      ;
+
+function_definitions : data_type ID OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER  {fprintf(yyout," : function definition");}
+                     | data_type ID OBRACKET CBRACKET OFLOWER stmt CFLOWER {fprintf(yyout," : function definition");}
+                     | VOID ID OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER {fprintf(yyout," : function definition");}
+                     | VOID ID OBRACKET CBRACKET OFLOWER stmt CFLOWER {fprintf(yyout," : function definition");}
+                     ;
 
 stmt : OFLOWER stmt CFLOWER
      | conditional_stmt stmt

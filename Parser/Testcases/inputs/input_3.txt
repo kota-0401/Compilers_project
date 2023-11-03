@@ -1,0 +1,16 @@
+//for colon syntax
+//while loop
+
+int main(){
+    circle mycircle = {[0,0],5};
+    int num[5];
+    line myline;
+    point mypoint = [0,5];
+    for(int i: num ){
+        myline = mycircle.tangent(mypoint);
+    }
+    while(mycircle.radius>0){
+        //comment
+    }
+    return 0;
+}

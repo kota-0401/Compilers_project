@@ -32,6 +32,28 @@ constant ({digit}+)
 "hyperbola" {fprintf(yyout,"Line %d - HYPERBOLA: %s\n",yylineno,yytext);}
 "ellipse" {fprintf(yyout,"Line %d - ELLIPSE: %s\n",yylineno,yytext);}
 
+"NULL" {fprintf(yyout,"Line %d - NULL: %s\n",yylineno,yytext);}
+"if" {fprintf(yyout,"Line %d - IF: %s\n",yylineno,yytext);}
+"else" {fprintf(yyout,"Line %d - ELSE: %s\n",yylineno,yytext);}
+"continue" {fprintf(yyout,"Line %d - CONTINUE: %s\n",yylineno,yytext);}
+"break" {fprintf(yyout,"Line %d - BREAK: %s\n",yylineno,yytext);}
+"return" {fprintf(yyout,"Line %d - RETURN: %s\n",yylineno,yytext);}
+"for" {fprintf(yyout,"Line %d - FOR: %s\n",yylineno,yytext);}
+"while" {fprintf(yyout,"Line %d - WHILE: %s\n",yylineno,yytext);}
+"print" {fprintf(yyout,"Line %d - PRINT: %s\n",yylineno,yytext);}
+
+"equation" {fprintf(yyout,"Line %d - EQUATION: %s\n",yylineno,yytext);}
+"eccentricity" {fprintf(yyout,"Line %d - ECCENTRICITY: %s\n",yylineno,yytext);}
+"tangent" {fprintf(yyout,"Line %d - TANGENT: %s\n",yylineno,yytext);}
+"normal" {fprintf(yyout,"Line %d - NORMAL: %s\n",yylineno,yytext);}
+"is_point" {fprintf(yyout,"Line %d - IS_POINT: %s\n",yylineno,yytext);}
+"centre" {fprintf(yyout,"Line %d - CENTRE: %s\n",yylineno,yytext);}
+"radius" {fprintf(yyout,"Line %d - RADIUS: %s\n",yylineno,yytext);}
+"xcor" {fprintf(yyout,"Line %d - XCOR: %s\n",yylineno,yytext);}
+"ycor" {fprintf(yyout,"Line %d - YCOR: %s\n",yylineno,yytext);}
+"slope"  {fprintf(yyout,"Line %d - SLOPE: %s\n",yylineno,yytext);}
+
+
 %%
 
 /* User Subroutine section */

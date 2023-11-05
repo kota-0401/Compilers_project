@@ -54,6 +54,10 @@ constant ({digit}+)
 "slope"  {fprintf(yyout,"%s",yytext); return SLOPE; }
 
 
+"," {fprintf(yyout,"%s",yytext); return COMMA; }
+";" {fprintf(yyout,"%s",yytext); return SEMICOLON; }
+":" {fprintf(yyout,"%s",yytext); return COLON; }
+
 "{" {fprintf(yyout,"Line %d - OFLOWER: %s\n",yylineno,yytext); }
 "}" {fprintf(yyout,"Line %d - CFLOWER: %s\n",yylineno,yytext); }
 "(" {fprintf(yyout,"Line %d - OBRACKET: %s\n",yylineno,yytext); }

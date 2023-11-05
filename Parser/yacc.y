@@ -40,6 +40,33 @@ int yyerror();
 %token YCOR
 %token SLOPE
 
+%token COMMA
+%token SEMICOLON
+%token COLON
+
+%token OFLOWER
+%token CFLOWER
+%token OBRACKET
+%token CBRACKET
+%token OSQUARE
+%token CSQUARE
+
+%token NEG_OP
+%token AND_OP
+%token OR_OP
+%token ACCESS_OP
+%token INCREMENT_OP
+%token DECREMENT_OP
+
+%token POWER_ASSIGN
+%token ADD_ASSIGN
+%token SUB_ASSIGN
+%token MUL_ASSIGN
+%token DIV_ASSIGN
+%token MOD_ASSIGN
+%token BIT_AND_ASSIGN
+%token BIT_OR_ASSIGN
+
 %start S
 
 %%

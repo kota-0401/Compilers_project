@@ -1,0 +1,23 @@
+void main() {
+    float a, b, c;
+    int x, y;
+
+    a = 3.0;
+    b = 4.0;
+    c = 5.0;
+    x = 1;
+    y = 2;
+
+    point p = [x,y], circle_centre = [a,b];
+    bool result;
+
+    circle C = {circle_centre,c};
+    result = C.is_point(p);
+{
+    if (result) {
+        print("The point is on the circle.");
+    } else {
+        print("The point is not on the circle.");
+    }
+}
+}

@@ -40,32 +40,29 @@ int yyerror();
 %token YCOR
 %token SLOPE
 
-%token COMMA
-%token SEMICOLON
-%token COLON
+%token LTE_OP
+%token LT_OP
+%token GTE_OP
+%token GT_OP
+%token EQ_OP
+%token NEQ_OP
 
-%token OFLOWER
-%token CFLOWER
-%token OBRACKET
-%token CBRACKET
-%token OSQUARE
-%token CSQUARE
+%token POWER_OP
+%token ADD_OP
+%token SUB_OP
+%token MUL_OP
+%token DIV_OP
+%token MOD_OP
+%token BIT_AND_OP
+%token BIT_OR_OP
 
-%token NEG_OP
-%token AND_OP
-%token OR_OP
-%token ACCESS_OP
-%token INCREMENT_OP
-%token DECREMENT_OP
-
-%token POWER_ASSIGN
-%token ADD_ASSIGN
-%token SUB_ASSIGN
-%token MUL_ASSIGN
-%token DIV_ASSIGN
-%token MOD_ASSIGN
-%token BIT_AND_ASSIGN
-%token BIT_OR_ASSIGN
+%token ASSIGN
+%token ID
+%token FLOAT_CONST
+%token INT_CONST
+%token CHAR_CONST
+%token STRING_CONST
+%token BOOL_CONST
 
 %start S
 
@@ -89,6 +86,10 @@ function_definitions : data_type ID OBRACKET par_list CBRACKET OFLOWER stmt CFLO
                      | VOID ID OBRACKET CBRACKET OFLOWER stmt CFLOWER {fprintf(yyout," : function definition");}
                      ;
 
+par_list : data_type ID COMMA par_list
+         | data_type ID
+         ;
+         
 stmt : OFLOWER stmt CFLOWER
      | conditional_stmt stmt
      | loop_stmt stmt 
@@ -101,12 +102,24 @@ stmt : OFLOWER stmt CFLOWER
      | OFLOWER CONTINUE SEMICOLON CFLOWER stmt
      | /*empty*/
      ;
-     
+ 
+exp_stmt : ID L ASSIGN conditional_exp SEMICOLON {fprintf(yyout," : assignment expression statement");}
+         | assign_exp SEMICOLON {fprintf(yyout," : assignment expression statement");}
+         | update_exp SEMICOLON {fprintf(yyout," : update expression statement");}
+         ;
+         
+conditional_stmt : IF while_body OFLOWER stmt CFLOWER {fprintf(yyout," : conditional statement");}
+                 | IF while_body OFLOWER stmt CFLOWER ELSE conditional_stmt {fprintf(yyout," : conditional statement");}
+                 | IF while_body OFLOWER stmt CFLOWER ELSE OFLOWER stmt CFLOWER {fprintf(yyout," : conditional statement");}
+                 ;
+                 
 loop_stmt : WHILE while_body OFLOWER stmt CFLOWER {fprintf(yyout," : loop");}
           | FOR for_body OFLOWER stmt CFLOWER {fprintf(yyout," : loop");}
           ;
+          
 while_body : OBRACKET conditional_exp CBRACKET
            ;
+           
 for_body : OBRACKET ID L ASSIGN conditional_exp SEMICOLON conditional_exp SEMICOLON assign_exp CBRACKET
          | OBRACKET INT ID L ASSIGN conditional_exp SEMICOLON conditional_exp SEMICOLON assign_exp CBRACKET
          | OBRACKET non_int ID L ASSIGN conditional_exp SEMICOLON conditional_exp SEMICOLON assign_exp CBRACKET

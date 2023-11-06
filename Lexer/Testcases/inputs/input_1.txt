@@ -1,0 +1,15 @@
+int func_add(int a,int b);
+
+int main(){
+    bool check;
+    string str = "hello";
+    int tesnum = func_add(a,2);
+    for(int i=0;i<4;i++){
+        if(a>=3){
+            a=(a-1);
+        }
+        else{
+            a=4;
+        }
+    }
+}

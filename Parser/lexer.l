@@ -54,31 +54,32 @@ constant ({digit}+)
 "slope"  {fprintf(yyout,"%s",yytext); return SLOPE; }
 
 
-"," {fprintf(yyout,"%s",yytext); return COMMA; }
-";" {fprintf(yyout,"%s",yytext); return SEMICOLON; }
-":" {fprintf(yyout,"%s",yytext); return COLON; }
+"<=" {fprintf(yyout,"%s",yytext); return LTE_OP; }
+"<" {fprintf(yyout,"%s",yytext); return LT_OP; }
+">=" {fprintf(yyout,"%s",yytext); return GTE_OP; }
+">" {fprintf(yyout,"%s",yytext); return GT_OP; }
+"==" {fprintf(yyout,"%s",yytext); return EQ_OP; }
+"!=" {fprintf(yyout,"%s",yytext); return NEQ_OP; }
 
-"{" {fprintf(yyout,"Line %d - OFLOWER: %s\n",yylineno,yytext); }
-"}" {fprintf(yyout,"Line %d - CFLOWER: %s\n",yylineno,yytext); }
-"(" {fprintf(yyout,"Line %d - OBRACKET: %s\n",yylineno,yytext); }
-")" {fprintf(yyout,"Line %d - CBRACKET: %s\n",yylineno,yytext); }
-"[" {fprintf(yyout,"Line %d - OSQUARE: %s\n",yylineno,yytext); }
-"]" {fprintf(yyout,"Line %d - CSQUARE: %s\n",yylineno,yytext); }
+"^" {fprintf(yyout,"%s",yytext); return POWER_OP; }
+"+" {fprintf(yyout,"%s",yytext); return ADD_OP; }
+"-" {fprintf(yyout,"%s",yytext); return SUB_OP; }
+"*" {fprintf(yyout,"%s",yytext); return MUL_OP; }
+"/" {fprintf(yyout,"%s",yytext); return DIV_OP; }
+"%" {fprintf(yyout,"%s",yytext); return MOD_OP; }
+"|" {fprintf(yyout,"%s",yytext); return BIT_OR_OP; }
+"&" {fprintf(yyout,"%s",yytext); return BIT_AND_OP; }
 
-NEG {fprintf(yyout,"Line %d - NEG_OP: %s\n",yylineno,yytext); }
-AND {fprintf(yyout,"Line %d - AND_OP: %s\n",yylineno,yytext); }
-OR  {fprintf(yyout,"Line %d - OR_OP: %s\n",yylineno,yytext); }
-"." {fprintf(yyout,"Line %d - ACCESS_OP: %s\n",yylineno,yytext); }
-"++" {fprintf(yyout,"Line %d - INCREMENT_OP: %s\n",yylineno,yytext); }
-"--" {fprintf(yyout,"Line %d - DECREMENT_OP: %s\n",yylineno,yytext); }
-"^=" {fprintf(yyout,"Line %d - POWER_ASSIGN: %s\n",yylineno,yytext); }
-"+=" {fprintf(yyout,"Line %d - ADD_ASSIGN: %s\n",yylineno,yytext); }
-"-=" {fprintf(yyout,"Line %d - SUB_ASSIGN: %s\n",yylineno,yytext); }
-"*=" {fprintf(yyout,"Line %d - MUL_ASSIGN: %s\n",yylineno,yytext); }
-"/=" {fprintf(yyout,"Line %d - DIV_ASSIGN: %s\n",yylineno,yytext); }
-"%=" {fprintf(yyout,"Line %d - MOD_ASSIGN: %s\n",yylineno,yytext); }
-"|=" {fprintf(yyout,"Line %d - BIT_AND_ASSIGN: %s\n",yylineno,yytext); }
-"&=" {fprintf(yyout,"Line %d - BIT_OR_ASSIGN: %s\n",yylineno,yytext); }
+"=" {fprintf(yyout,"%s",yytext); return ASSIGN; }
+"TRUE"|"FALSE" {fprintf(yyout,"%s",yytext); return BOOL_CONST; }
+{letter}({digit}|{letter}|_)* {fprintf(yyout,"%s",yytext); return ID; }
+{constant}?[.]{constant}? {fprintf(yyout,"%s",yytext); return FLOAT_CONST; }
+{constant} {fprintf(yyout,"%s",yytext); return INT_CONST; }
+['][\\][n]['] {fprintf(yyout,"%s",yytext); return CHAR_CONST; }
+['][^'\n]?['] {fprintf(yyout,"%s",yytext); return CHAR_CONST; }
+["][^"\n]*["] {fprintf(yyout,"%s",yytext); return STRING_CONST; }
+{blanks} {fprintf(yyout,"%s",yytext); }
+. {fprintf(yyout,"%s : invalid token\n",yytext); exit(1);}
 
 
 %%

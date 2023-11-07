@@ -53,6 +53,32 @@ constant ({digit}+)
 "ycor" {fprintf(yyout,"%s",yytext); return YCOR; }
 "slope"  {fprintf(yyout,"%s",yytext); return SLOPE; }
 
+"," {fprintf(yyout,"%s",yytext); return COMMA; }
+";" {fprintf(yyout,"%s",yytext); return SEMICOLON; }
+":" {fprintf(yyout,"%s",yytext); return COLON; }
+
+"{" {fprintf(yyout,"%s",yytext); return OFLOWER; }
+"}" {fprintf(yyout,"%s",yytext); return CFLOWER; }
+"(" {fprintf(yyout,"%s",yytext); return OBRACKET; }
+")" {fprintf(yyout,"%s",yytext); return CBRACKET; }
+"[" {fprintf(yyout,"%s",yytext); return OSQUARE; }
+"]" {fprintf(yyout,"%s",yytext); return CSQUARE; }
+
+NEG {fprintf(yyout,"%s",yytext); return NEG_OP; }
+AND {fprintf(yyout,"%s",yytext); return AND_OP; }
+OR  {fprintf(yyout,"%s",yytext); return OR_OP; }
+"." {fprintf(yyout,"%s",yytext); return ACCESS_OP; }
+"++" {fprintf(yyout,"%s",yytext); return INCREMENT_OP; }
+"--" {fprintf(yyout,"%s",yytext); return DECREMENT_OP; }
+
+"^=" {fprintf(yyout,"%s",yytext); return POWER_ASSIGN; }
+"+=" {fprintf(yyout,"%s",yytext); return ADD_ASSIGN; }
+"-=" {fprintf(yyout,"%s",yytext); return SUB_ASSIGN; }
+"*=" {fprintf(yyout,"%s",yytext); return MUL_ASSIGN; }
+"/=" {fprintf(yyout,"%s",yytext); return DIV_ASSIGN; }
+"%=" {fprintf(yyout,"%s",yytext); return MOD_ASSIGN; }
+"|=" {fprintf(yyout,"%s",yytext); return BIT_AND_ASSIGN; }
+"&=" {fprintf(yyout,"%s",yytext); return BIT_OR_ASSIGN; }
 
 "<=" {fprintf(yyout,"%s",yytext); return LTE_OP; }
 "<" {fprintf(yyout,"%s",yytext); return LT_OP; }
@@ -80,6 +106,5 @@ constant ({digit}+)
 ["][^"\n]*["] {fprintf(yyout,"%s",yytext); return STRING_CONST; }
 {blanks} {fprintf(yyout,"%s",yytext); }
 . {fprintf(yyout,"%s : invalid token\n",yytext); exit(1);}
-
 
 %%

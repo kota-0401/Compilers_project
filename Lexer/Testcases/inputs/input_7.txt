@@ -1,0 +1,10 @@
+//while loop
+void main() {
+    while(mycircle.radius>0){
+        //comment
+        int a = 0;
+        a++;
+    }
+    
+}
+int a; $

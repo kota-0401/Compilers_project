@@ -53,6 +53,32 @@ constant ({digit}+)
 "ycor" {fprintf(yyout,"Line %d - YCOR: %s\n",yylineno,yytext);}
 "slope"  {fprintf(yyout,"Line %d - SLOPE: %s\n",yylineno,yytext);}
 
+"," {fprintf(yyout,"Line %d - COMMA: %s\n",yylineno,yytext);}
+";" {fprintf(yyout,"Line %d - SEMICOLON: %s\n",yylineno,yytext);}
+":" {fprintf(yyout,"Line %d - COLON: %s\n",yylineno,yytext);}
+
+"{" {fprintf(yyout,"Line %d - OFLOWER: %s\n",yylineno,yytext); }
+"}" {fprintf(yyout,"Line %d - CFLOWER: %s\n",yylineno,yytext); }
+"(" {fprintf(yyout,"Line %d - OBRACKET: %s\n",yylineno,yytext); }
+")" {fprintf(yyout,"Line %d - CBRACKET: %s\n",yylineno,yytext); }
+"[" {fprintf(yyout,"Line %d - OSQUARE: %s\n",yylineno,yytext); }
+"]" {fprintf(yyout,"Line %d - CSQUARE: %s\n",yylineno,yytext); }
+
+NEG {fprintf(yyout,"Line %d - NEG_OP: %s\n",yylineno,yytext); }
+AND {fprintf(yyout,"Line %d - AND_OP: %s\n",yylineno,yytext); }
+OR  {fprintf(yyout,"Line %d - OR_OP: %s\n",yylineno,yytext); }
+"." {fprintf(yyout,"Line %d - ACCESS_OP: %s\n",yylineno,yytext); }
+"++" {fprintf(yyout,"Line %d - INCREMENT_OP: %s\n",yylineno,yytext); }
+"--" {fprintf(yyout,"Line %d - DECREMENT_OP: %s\n",yylineno,yytext); }
+
+"^=" {fprintf(yyout,"Line %d - POWER_ASSIGN: %s\n",yylineno,yytext); }
+"+=" {fprintf(yyout,"Line %d - ADD_ASSIGN: %s\n",yylineno,yytext); }
+"-=" {fprintf(yyout,"Line %d - SUB_ASSIGN: %s\n",yylineno,yytext); }
+"*=" {fprintf(yyout,"Line %d - MUL_ASSIGN: %s\n",yylineno,yytext); }
+"/=" {fprintf(yyout,"Line %d - DIV_ASSIGN: %s\n",yylineno,yytext); }
+"%=" {fprintf(yyout,"Line %d - MOD_ASSIGN: %s\n",yylineno,yytext); }
+"|=" {fprintf(yyout,"Line %d - BIT_AND_ASSIGN: %s\n",yylineno,yytext); }
+"&=" {fprintf(yyout,"Line %d - BIT_OR_ASSIGN: %s\n",yylineno,yytext); }
 
 "<=" {fprintf(yyout,"Line %d - LTE_OP: %s\n",yylineno,yytext); }
 "<" {fprintf(yyout,"Line %d - LT_OP: %s\n",yylineno,yytext); }

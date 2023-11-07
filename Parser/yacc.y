@@ -40,6 +40,33 @@ int yyerror();
 %token YCOR
 %token SLOPE
 
+%token COMMA
+%token SEMICOLON
+%token COLON
+
+%token OFLOWER
+%token CFLOWER
+%token OBRACKET
+%token CBRACKET
+%token OSQUARE
+%token CSQUARE
+
+%token NEG_OP
+%token AND_OP
+%token OR_OP
+%token ACCESS_OP
+%token INCREMENT_OP
+%token DECREMENT_OP
+
+%token POWER_ASSIGN
+%token ADD_ASSIGN
+%token SUB_ASSIGN
+%token MUL_ASSIGN
+%token DIV_ASSIGN
+%token MOD_ASSIGN
+%token BIT_AND_ASSIGN
+%token BIT_OR_ASSIGN
+
 %token LTE_OP
 %token LT_OP
 %token GTE_OP
@@ -103,6 +130,29 @@ stmt : OFLOWER stmt CFLOWER
      | /*empty*/
      ;
  
+call : call_stmt SEMICOLON {fprintf(yyout," : call statement");}
+     ;
+
+R : return_stmt SEMICOLON {fprintf(yyout," : return statement");}
+  ;
+
+dec_stmt : data_type dlist SEMICOLON  {fprintf(yyout," : declaration statement");}
+         ;
+      
+dlist : d_list COMMA dlist
+      | d_list
+      ; 
+
+d_list : ID ASSIGN conditional_exp
+       | ID L
+       ;
+
+L : /*empty*/
+  | OSQUARE ID CSQUARE L
+  | OSQUARE INT_CONST CSQUARE L
+  | OSQUARE FLOAT_CONST CSQUARE L
+  ;
+
 exp_stmt : ID L ASSIGN conditional_exp SEMICOLON {fprintf(yyout," : assignment expression statement");}
          | assign_exp SEMICOLON {fprintf(yyout," : assignment expression statement");}
          | update_exp SEMICOLON {fprintf(yyout," : update expression statement");}
@@ -179,7 +229,52 @@ E : OBRACKET E ADD_OP E CBRACKET
 update_exp : ID L INCREMENT_OP
            | ID L DECREMENT_OP
            ;
+           
+return_stmt : RETURN conditional_exp 
+            ;
 
+call_stmt : ID OBRACKET call_list CBRACKET
+          | ID OBRACKET CBRACKET
+          | ID L ACCESS_OP property
+          ;
+
+property : IS_POINT OBRACKET OSQUARE E COMMA E CSQUARE CBRACKET
+         | IS_POINT OBRACKET E CBRACKET
+         | EQUATION
+         | ECCENTRICITY
+         | TANGENT OBRACKET OSQUARE E COMMA E CSQUARE CBRACKET
+         | TANGENT OBRACKET E CBRACKET
+         | NORMAL OBRACKET OSQUARE E COMMA E CSQUARE CBRACKET
+         | NORMAL OBRACKET E CBRACKET
+         | CENTRE
+         | RADIUS
+         | XCOR
+         | YCOR
+         | SLOPE
+         ;
+
+call_list : conditional_exp COMMA call_list
+          | conditional_exp
+          ;
+
+print_stmt : PRINT OBRACKET E CBRACKET SEMICOLON
+           ;
+
+data_type : INT
+          | non_int
+          ;
+          
+non_int : CHAR 
+        | STRING 
+        | BOOL 
+        | POINT 
+        | FLOAT 
+        | LINE 
+        | CIRCLE 
+        | ELLIPSE 
+        | PARABOLA 
+        | HYPERBOLA
+        ;
 %%
 
 int yywrap(){}

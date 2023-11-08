@@ -1,7 +1,7 @@
 yacc -d yacc.y;
 lex lexer.l;
 gcc y.tab.c lex.yy.c -ll;
-mkdir outputs;
+mkdir Testcases/outputs;
 ./a.out <Testcases/inputs/input_1.txt> Testcases/outputs/output_1.txt;
 ./a.out <Testcases/inputs/input_2.txt> Testcases/outputs/output_2.txt;
 ./a.out <Testcases/inputs/input_3.txt> Testcases/outputs/output_3.txt;

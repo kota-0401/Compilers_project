@@ -58,3 +58,25 @@ void comment() {
 int yywrap(){
     return 1;
 }
+"+=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"-=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"*=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"/=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"%=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"|=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"&=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+
+"<=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"<" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+">=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+">" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"==" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"!=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+
+"-" { strcpy(yylval.obj.value, yytext); return SUB_OP; }
+"+" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"*" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"/" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"%" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"|" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"&" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }

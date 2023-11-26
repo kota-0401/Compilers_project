@@ -80,3 +80,19 @@ int yywrap(){
 "%" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
 "|" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
 "&" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+
+    cout << "Equation of the hyperbola: " << myHyperbola.equation() << endl;
+
+    point testPointHyperbola = {1.0, 0.0};
+    cout << "Is the point on the hyperbola? " << (myHyperbola.is_point(testPointHyperbola) ? "Yes" : "No") << endl;
+
+    cout << "Eccentricity of the hyperbola: " << myHyperbola.eccentricity() << endl;
+
+    line normalLineHyperbola = myHyperbola.normal({1.0, 0.0});
+    cout << "Equation of the normal line for hyperbola: " << normalLineHyperbola.equation() << endl;
+
+    line tangentLineHyperbola = myHyperbola.tangent({1.0, 0.0});
+    cout << "Equation of the tangent line for hyperbola: " << tangentLineHyperbola.equation() << endl;
+
+    return 0;
+}

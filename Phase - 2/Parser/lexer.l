@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
+void comment();
 %}
 
 /* Rules Section */
@@ -15,7 +16,7 @@ constant ({digit}+)
 
 %%
 
-\n {fprintf(yyout,"%s",yytext); }
+\n {yylineno++; fprintf(yyout,"%s",yytext); }
 [/][*]([^*]|[*]+[^*/])*[*]+[/] {fprintf(yyout,"%s",yytext); }
 [/][/][^\n]* {fprintf(yyout,"%s",yytext); }
 
@@ -34,13 +35,13 @@ constant ({digit}+)
 
 "NULL" {fprintf(yyout,"%s",yytext); return NULL_; }
 "if" {fprintf(yyout,"%s",yytext); return IF; }
+"elif" {fprintf(yyout,"%s",yytext); return ELIF; }
 "else" {fprintf(yyout,"%s",yytext); return ELSE; }
 "continue" {fprintf(yyout,"%s",yytext); return CONTINUE; }
 "break" {fprintf(yyout,"%s",yytext); return BREAK; }
 "return" {fprintf(yyout,"%s",yytext); return RETURN; }
 "for" {fprintf(yyout,"%s",yytext); return FOR; }
 "while" {fprintf(yyout,"%s",yytext); return WHILE; }
-"print" {fprintf(yyout,"%s",yytext); return PRINT; }
 
 "equation" {fprintf(yyout,"%s",yytext); return EQUATION; }
 "eccentricity" {fprintf(yyout,"%s",yytext); return ECCENTRICITY; }
@@ -52,6 +53,7 @@ constant ({digit}+)
 "xcor" {fprintf(yyout,"%s",yytext); return XCOR; }
 "ycor" {fprintf(yyout,"%s",yytext); return YCOR; }
 "slope"  {fprintf(yyout,"%s",yytext); return SLOPE; }
+
 
 "," {fprintf(yyout,"%s",yytext); return COMMA; }
 ";" {fprintf(yyout,"%s",yytext); return SEMICOLON; }
@@ -71,30 +73,28 @@ OR  {fprintf(yyout,"%s",yytext); return OR_OP; }
 "++" {fprintf(yyout,"%s",yytext); return INCREMENT_OP; }
 "--" {fprintf(yyout,"%s",yytext); return DECREMENT_OP; }
 
-"^=" {fprintf(yyout,"%s",yytext); return POWER_ASSIGN; }
-"+=" {fprintf(yyout,"%s",yytext); return ADD_ASSIGN; }
-"-=" {fprintf(yyout,"%s",yytext); return SUB_ASSIGN; }
-"*=" {fprintf(yyout,"%s",yytext); return MUL_ASSIGN; }
-"/=" {fprintf(yyout,"%s",yytext); return DIV_ASSIGN; }
-"%=" {fprintf(yyout,"%s",yytext); return MOD_ASSIGN; }
-"|=" {fprintf(yyout,"%s",yytext); return BIT_AND_ASSIGN; }
-"&=" {fprintf(yyout,"%s",yytext); return BIT_OR_ASSIGN; }
+"+=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"-=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"*=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"/=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"%=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"|=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
+"&=" {fprintf(yyout,"%s",yytext); return ASSIGN_OP; }
 
-"<=" {fprintf(yyout,"%s",yytext); return LTE_OP; }
-"<" {fprintf(yyout,"%s",yytext); return LT_OP; }
-">=" {fprintf(yyout,"%s",yytext); return GTE_OP; }
-">" {fprintf(yyout,"%s",yytext); return GT_OP; }
-"==" {fprintf(yyout,"%s",yytext); return EQ_OP; }
-"!=" {fprintf(yyout,"%s",yytext); return NEQ_OP; }
+"<=" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
+"<" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
+">=" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
+">" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
+"==" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
+"!=" {fprintf(yyout,"%s",yytext); return RELATIVE_OP; }
 
-"^" {fprintf(yyout,"%s",yytext); return POWER_OP; }
-"+" {fprintf(yyout,"%s",yytext); return ADD_OP; }
-"-" {fprintf(yyout,"%s",yytext); return SUB_OP; }
-"*" {fprintf(yyout,"%s",yytext); return MUL_OP; }
-"/" {fprintf(yyout,"%s",yytext); return DIV_OP; }
-"%" {fprintf(yyout,"%s",yytext); return MOD_OP; }
-"|" {fprintf(yyout,"%s",yytext); return BIT_OR_OP; }
-"&" {fprintf(yyout,"%s",yytext); return BIT_AND_OP; }
+"+" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"-" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"*" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"/" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"%" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"|" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
+"&" {fprintf(yyout,"%s",yytext); return ARITHMETIC_OP; }
 
 "=" {fprintf(yyout,"%s",yytext); return ASSIGN; }
 "TRUE"|"FALSE" {fprintf(yyout,"%s",yytext); return BOOL_CONST; }
@@ -105,6 +105,20 @@ OR  {fprintf(yyout,"%s",yytext); return OR_OP; }
 ['][^'\n]?['] {fprintf(yyout,"%s",yytext); return CHAR_CONST; }
 ["][^"\n]*["] {fprintf(yyout,"%s",yytext); return STRING_CONST; }
 {blanks} {fprintf(yyout,"%s",yytext); }
-. {fprintf(yyout,"%s : invalid token\n",yytext); exit(1);}
+. {fprintf(yyout,"\nLexical Error at Line %d: %s (invalid token)\n",yylineno, yytext); exit(0);}
 
 %%
+/* User Subroutine section */
+
+void comment() {
+  int i;
+  for (i = 0; i < yyleng; i++) {
+    if (yytext[i] == '\n') {
+      yylineno++;
+    }
+  }
+}
+
+int yywrap(){
+    return 1;
+}

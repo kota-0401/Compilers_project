@@ -1,8 +1,7 @@
-int main(){
-    //int a =5;
-    /*This
-    is a multiline comment
+main (int) (){
+    /*Invalid declaration
     */
+    int a, float b;
     circle mycircle = {[0,0],1};
     point mypoint = [1,0];
     check = mycircle.is_point(mypoint);

@@ -9,3 +9,4 @@ mkdir Testcases/outputs;
 ./a.out <Testcases/inputs/input_5.txt> Testcases/outputs/output_5.txt;
 ./a.out <Testcases/inputs/input_6.txt> Testcases/outputs/output_6.txt;
 ./a.out <Testcases/inputs/input_7.txt> Testcases/outputs/output_7.txt;
+./a.out <Testcases/inputs/input_8.txt> Testcases/outputs/output_8.txt;

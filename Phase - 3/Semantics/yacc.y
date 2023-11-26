@@ -210,6 +210,20 @@ par_list : data_type ID COMMA par_list {
                         }
          ;
 
+stmt : scope_inc stmt scope_dec stmt
+     | conditional_stmt stmt
+     | loop_stmt stmt 
+     | exp_stmt stmt
+     | dec_stmt stmt
+     | print_stmt stmt
+     | input_stmt stmt
+     | call stmt
+     | R stmt
+     | BREAK SEMICOLON stmt
+     | CONTINUE SEMICOLON stmt
+     | /*empty*/
+     ;
+
 conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
                  ;
                            

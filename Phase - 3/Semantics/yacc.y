@@ -256,6 +256,23 @@ L : /*empty*/ {}
   | L_1 L_3 CSQUARE L 
   ;
 
+L_3 : ID {
+           if(!(is_variable_declared($<obj.value>1))){
+            cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
+           }
+           else if (get_type($<obj.value>1) != "int") {
+            cout << "Semantic Error at Line " << yylineno << ": expected type of int" << endl;
+           }
+           else {
+            no_of_dim++;
+           }
+        }
+    ;
+
+exp_stmt : initialize_exp
+         | increment_exp SEMICOLON 
+         ;
+
 conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
                  ;
                            

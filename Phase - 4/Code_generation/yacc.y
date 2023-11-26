@@ -1,114 +1,61 @@
-%%
-/*productions*/
-S : function_declarations S
-  | function_definitions S
-  | dec_stmt S 
-  | /*empty*/{}
-  ;
+conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
+                 ;
+                           
+elif_stmt : ELIF while_body scope_inc stmt scope_dec elif_stmt
+          | else_stmt
+          ;
 
-function_declarations : func_exp OBRACKET data_type CBRACKET OBRACKET par_list CBRACKET SEMICOLON {
-                                                                    add_function_value = add_function(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1); 
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    param_list.clear();
-                                                                    delete_symbol_table();
-                                                                    }
-                      | func_exp OBRACKET data_type CBRACKET OBRACKET CBRACKET SEMICOLON {
-                                                                    add_function_value = add_function(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1); 
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    delete_symbol_table();
-                                                                    }                      
-                      | func_exp OBRACKET VOID CBRACKET OBRACKET par_list CBRACKET SEMICOLON {
-                                                                    add_function_value = add_function(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1); 
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    param_list.clear();
-                                                                    delete_symbol_table();
-                                                                    }                      
-                      | func_exp OBRACKET VOID CBRACKET OBRACKET CBRACKET SEMICOLON {
-                                                                    add_function_value = add_function(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1); 
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    delete_symbol_table();
-                                                                    }                      
-                      ;
+else_stmt : ELSE scope_inc stmt scope_dec
+          | /*empty*/
+          ;
 
-function_definitions : func_exp OBRACKET data_type CBRACKET OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER {
-                                                                    add_function_value = add_function_body(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value == 2) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1);
-                                                                    } 
-                                                                    else if(add_function_value == 0) {
-                                                                      printf("Semantic Error at Line %d: redefinition of function %s\n", yylineno, $<obj.value>1);  
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    param_list.clear();
-                                                                    delete_symbol_table();
-                                                                    }                     
-                     | func_exp OBRACKET data_type CBRACKET OBRACKET CBRACKET OFLOWER stmt CFLOWER {
-                                                                    add_function_value = add_function_body(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value == 2) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1);
-                                                                    } 
-                                                                    else if(add_function_value == 0) {
-                                                                      printf("Semantic Error at Line %d: redefinition of function %s\n", yylineno, $<obj.value>1);  
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    delete_symbol_table();
-                                                                    }                      
-                     | func_exp OBRACKET VOID CBRACKET OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER {
-                                                                    add_function_value = add_function_body(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value == 2) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1);
-                                                                    } 
-                                                                    else if(add_function_value == 0) {
-                                                                      printf("Semantic Error at Line %d: redefinition of function %s\n", yylineno, $<obj.value>1);  
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    param_list.clear();
-                                                                    delete_symbol_table();
-                                                                    }                       
-                     | func_exp OBRACKET VOID CBRACKET OBRACKET CBRACKET OFLOWER stmt CFLOWER {
-                                                                    add_function_value = add_function_body(charptr_to_string($<obj.value>1), charptr_to_string($<obj.value>3)); 
-                                                                    if(add_function_value == 2) {
-                                                                      printf("Semantic Error at Line %d: ambiguating new declaration of function %s\n", yylineno, $<obj.value>1);
-                                                                    } 
-                                                                    else if(add_function_value == 0) {
-                                                                      printf("Semantic Error at Line %d: redefinition of function %s\n", yylineno, $<obj.value>1);  
-                                                                    } 
-                                                                    add_function_value = 0; 
-                                                                    delete_symbol_table();
-                                                                    } 
-                     ;
+loop_stmt : WHILE while_body scope_inc stmt scope_dec
+          | FOR OBRACKET for_body_1 stmt scope_dec
+          | FOR for_body_2 OFLOWER stmt scope_dec
+          ; 
 
-func_exp : ID {
-            if (is_variable_declared(charptr_to_string($<obj.value>1))) {
-              printf("Semantic Error at Line %d: redeclaration of global variable %s\n",yylineno, $<obj.value>1); 
-            }
-            else {
-              create_symbol_table();
-              strcpy($<obj.value>$, $<obj.value>1);
-            }
-            }
-         ;
+while_body : OBRACKET conditional_exp CBRACKET {
+                if(!(type_checking("bool",charptr_to_string($<obj.value>2)))){
+                  printf("Semantic Error at Line %d: expected rhs of type: bool", yylineno);
+                }
+                }
+           ;
 
-par_list : data_type ID COMMA par_list {
-                        if (insert_param(charptr_to_string($<obj.value>2), charptr_to_string($<obj.value>2)) == 0) {
-                          printf("Semantic Error at Line %d: redeclaration of function parameter %s\n", yylineno, $<obj.value>2); 
-                        }
-                        }
-         | data_type ID {
-                        if (insert_param(charptr_to_string($<obj.value>2), charptr_to_string($<obj.value>2)) == 0) {
-                          printf("Semantic Error at Line %d: redeclaration of function parameter %s\n", yylineno, $<obj.value>2); 
-                        }
-                        }
-         ;
+for_body_1 : for_body_1_a SEMICOLON increment_exp CBRACKET scope_inc
+           ;
+
+for_body_1_a : initialize_exp conditional_exp {
+                if(!(type_checking("bool",charptr_to_string($<obj.value>2)))){
+                  printf("Semantic Error at Line %d: expected rhs of type: bool", yylineno);
+                }
+                }
+             ;
+
+for_body_2 : for_exp data_type dec_assign for_body_2_a for_body_2_b SEMICOLON increment_exp CBRACKET
+           | for_exp data_type id_1 COLON id_2 CBRACKET
+           ;
+
+for_body_2_a : SEMICOLON{eletype = charptr_to_string("");}
+             ;
+
+for_body_2_b : conditional_exp{
+                if(!(type_checking("bool",charptr_to_string($<obj.value>1)))){
+                  printf("Semantic Error at Line %d: expected rhs of type: bool", yylineno);
+                }
+                }
+             ;
+
+id_1 : ID {
+        if(add_variable(charptr_to_string($<obj.value>1))){
+          printf("Semantic Error at Line %d : redeclaration of variable %s\n", yylineno, $<obj.value>1);
+        }
+        strcpy($<obj.value>$, string_to_char(get_type(charptr_to_string($<obj.value>1))));
+        }
+     ;
+
+id_2 : ID {
+        if(!(is_variable_declared(charptr_to_string($<obj.value>1)))){
+          printf("Semantic Error at Line %d : undefined variable %s\n", yylineno, $<obj.value>1);
+        }
+        }
+     ;

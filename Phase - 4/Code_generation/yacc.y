@@ -661,4 +661,26 @@ data_type : INT {strcpy($<obj.value>$, $<obj.value>1); eletype = string_to_char(
           | CIRCLE {strcpy($<obj.value>$, $<obj.value>1); eletype = string_to_char("circle");}
           | ELLIPSE {strcpy($<obj.value>$, $<obj.value>1); eletype = string_to_char("ellipse");}
           | PARABOLA {strcpy($<obj.value>$, $<obj.value>1); eletype = string_to_char("parabola");}
+          | HYPERBOLA {strcpy($<obj.value>$, $<obj.value>1); eletype = string_to_char("hyperbola");}
+          ;
+%%
 
+int yywrap(){return 0;}
+
+int main() {
+  yyin = fopen("input.txt", "r");
+  cpp_file = fopen("output.cpp", "w");
+  fprintf(cpp_file,"#include <iostream>\nusing namespace std;\n\n");
+  fprintf(cpp_file,"struct point {\n    float x, y;\n};\n\nstruct line {\n    point start, end;");
+  int f = yyparse();   
+  if(f) {
+    printf("Success");
+  }
+    printf("Failure"); 
+    return 0;
+}
+
+void yyerror(const char *a) {
+  printf("Syntax Error at Line %d: %s\n", yylineno, a);
+  exit(0);
+}

@@ -1,3 +1,28 @@
+/*Definition Section*/
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "y.tab.h"
+int yylex();
+void comment();
+FILE* cpp_file;
+%}
+
+/* Rules Section */
+
+blanks [ \t]+
+letter [a-zA-Z]
+digit [0-9]
+constant ({digit}+)
+
+%%
+
+\n {yylineno++; fprintf(cpp_file,"%s",yytext);}
+[/][*]([^*]|[*]+[^*/])*[*]+[/] {comment(); fprintf(cpp_file,"%s",yytext);}
+[/][/][^\n]* {fprintf(cpp_file,"%s",yytext);}
+
 "void" { strcpy(yylval.obj.value, yytext); return VOID; }
 "int" { strcpy(yylval.obj.value, yytext); return INT; }
 "float" { strcpy(yylval.obj.value, yytext); return FLOAT; }
@@ -16,3 +41,20 @@
 "elif" { strcpy(yylval.obj.value, yytext); return ELIF; }
 "else" { strcpy(yylval.obj.value, yytext); return ELSE; }
 "continue" { strcpy(yylval.obj.value, yytext); return CONTINUE; }
+
+%%
+
+/* User Subroutine section */
+
+void comment() {
+  int i;
+  for (i = 0; i < yyleng; i++) {
+    if (yytext[i] == '\n') {
+      yylineno++;
+    }
+  }
+}
+
+int yywrap(){
+    return 1;
+}

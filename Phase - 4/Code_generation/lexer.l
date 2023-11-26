@@ -41,23 +41,43 @@ constant ({digit}+)
 "elif" { strcpy(yylval.obj.value, yytext); return ELIF; }
 "else" { strcpy(yylval.obj.value, yytext); return ELSE; }
 "continue" { strcpy(yylval.obj.value, yytext); return CONTINUE; }
+"break" { strcpy(yylval.obj.value, yytext); return BREAK; }
+"return" { strcpy(yylval.obj.value, yytext); return RETURN; }
+"for" { strcpy(yylval.obj.value, yytext); return FOR; }
+"while" { strcpy(yylval.obj.value, yytext); return WHILE; }
+"print" { strcpy(yylval.obj.value, yytext); return PRINT; }
+"input" { strcpy(yylval.obj.value, yytext); return INPUT; }
 
-%%
+"equation" { strcpy(yylval.obj.value, yytext); return EQUATION; }
+"eccentricity" { strcpy(yylval.obj.value, yytext); return ECCENTRICITY; }
+"tangent" { strcpy(yylval.obj.value, yytext); return TANGENT; }
+"normal" { strcpy(yylval.obj.value, yytext); return NORMAL; }
+"is_point" { strcpy(yylval.obj.value, yytext); return IS_POINT; }
+"centre" { strcpy(yylval.obj.value, yytext); return CENTRE; }
+"radius" { strcpy(yylval.obj.value, yytext); return RADIUS; }
+"xcor" { strcpy(yylval.obj.value, yytext); return XCOR; }
+"ycor" { strcpy(yylval.obj.value, yytext); return YCOR; }
+"slope"  { strcpy(yylval.obj.value, yytext); return SLOPE; }
 
-/* User Subroutine section */
 
-void comment() {
-  int i;
-  for (i = 0; i < yyleng; i++) {
-    if (yytext[i] == '\n') {
-      yylineno++;
-    }
-  }
-}
+"," { strcpy(yylval.obj.value, yytext); return COMMA; }
+";" { strcpy(yylval.obj.value, yytext); return SEMICOLON; }
+":" { strcpy(yylval.obj.value, yytext); return COLON; }
 
-int yywrap(){
-    return 1;
-}
+"{" { strcpy(yylval.obj.value, yytext); return OFLOWER; }
+"}" { strcpy(yylval.obj.value, yytext); return CFLOWER; }
+"(" { strcpy(yylval.obj.value, yytext); return OBRACKET; }
+")" { strcpy(yylval.obj.value, yytext); return CBRACKET; }
+"[" { strcpy(yylval.obj.value, yytext); return OSQUARE; }
+"]" { strcpy(yylval.obj.value, yytext); return CSQUARE; }
+
+NEG { strcpy(yylval.obj.value, yytext); return NEG_OP; }
+AND { strcpy(yylval.obj.value, yytext); return AND_OP; }
+OR  { strcpy(yylval.obj.value, yytext); return OR_OP; }
+"." { strcpy(yylval.obj.value, yytext); return ACCESS_OP; }
+"++" { strcpy(yylval.obj.value, yytext); return INCREMENT_OP; }
+"--" { strcpy(yylval.obj.value, yytext); return DECREMENT_OP; }
+
 "+=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
 "-=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
 "*=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
@@ -81,18 +101,30 @@ int yywrap(){
 "|" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
 "&" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
 
-    cout << "Equation of the hyperbola: " << myHyperbola.equation() << endl;
+"=" { strcpy(yylval.obj.value, yytext); return ASSIGN; }
+"TRUE"|"FALSE" { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "bool"); return BOOL_CONST; }
+{letter}({digit}|{letter}|_)* { strcpy(yylval.obj.value, yytext); return ID; }
+{constant}?[.]{constant}? { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "float"); return FLOAT_CONST; }
+{constant} { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "int"); return INT_CONST; }
+['][\\][n]['] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "char"); return CHAR_CONST; }
+['][^'\n]?['] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "char"); return CHAR_CONST; }
+["][^"\n]*["] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "string"); return STRING_CONST; }
+{blanks} {fprintf(cpp_file,"%s",yytext);}
+. {fprintf(yyout,"Lexical Error at Line %d: %s (invalid token)\n",yylineno, yytext); return 0;}
 
-    point testPointHyperbola = {1.0, 0.0};
-    cout << "Is the point on the hyperbola? " << (myHyperbola.is_point(testPointHyperbola) ? "Yes" : "No") << endl;
+%%
 
-    cout << "Eccentricity of the hyperbola: " << myHyperbola.eccentricity() << endl;
+/* User Subroutine section */
 
-    line normalLineHyperbola = myHyperbola.normal({1.0, 0.0});
-    cout << "Equation of the normal line for hyperbola: " << normalLineHyperbola.equation() << endl;
+void comment() {
+  int i;
+  for (i = 0; i < yyleng; i++) {
+    if (yytext[i] == '\n') {
+      yylineno++;
+    }
+  }
+}
 
-    line tangentLineHyperbola = myHyperbola.tangent({1.0, 0.0});
-    cout << "Equation of the tangent line for hyperbola: " << tangentLineHyperbola.equation() << endl;
-
-    return 0;
+int yywrap(){
+    return 1;
 }

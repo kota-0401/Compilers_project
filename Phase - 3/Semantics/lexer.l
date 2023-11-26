@@ -35,9 +35,81 @@ constant ({digit}+)
 "hyperbola" { strcpy(yylval.obj.value, yytext); return HYPERBOLA; }
 "ellipse" { strcpy(yylval.obj.value, yytext); return ELLIPSE; }
 
+"NULL" { strcpy(yylval.obj.value, yytext); return NULL_; }
+"if" { strcpy(yylval.obj.value, yytext); return IF; }
+"elif" { strcpy(yylval.obj.value, yytext); return ELIF; }
+"else" { strcpy(yylval.obj.value, yytext); return ELSE; }
+"continue" { strcpy(yylval.obj.value, yytext); return CONTINUE; }
+"break" { strcpy(yylval.obj.value, yytext); return BREAK; }
+"return" { strcpy(yylval.obj.value, yytext); return RETURN; }
+"for" { strcpy(yylval.obj.value, yytext); return FOR; }
+"while" { strcpy(yylval.obj.value, yytext); return WHILE; }
+"print" { strcpy(yylval.obj.value, yytext); return PRINT; }
+"input" { strcpy(yylval.obj.value, yytext); return INPUT; }
+
+"equation" { strcpy(yylval.obj.value, yytext); return EQUATION; }
+"eccentricity" { strcpy(yylval.obj.value, yytext); return ECCENTRICITY; }
+"tangent" { strcpy(yylval.obj.value, yytext); return TANGENT; }
+"normal" { strcpy(yylval.obj.value, yytext); return NORMAL; }
+"is_point" { strcpy(yylval.obj.value, yytext); return IS_POINT; }
+"centre" { strcpy(yylval.obj.value, yytext); return CENTRE; }
+"radius" { strcpy(yylval.obj.value, yytext); return RADIUS; }
+"xcor" { strcpy(yylval.obj.value, yytext); return XCOR; }
+"ycor" { strcpy(yylval.obj.value, yytext); return YCOR; }
+"slope"  { strcpy(yylval.obj.value, yytext); return SLOPE; }
 
 
+"," { strcpy(yylval.obj.value, yytext); return COMMA; }
+";" { strcpy(yylval.obj.value, yytext); return SEMICOLON; }
+":" { strcpy(yylval.obj.value, yytext); return COLON; }
 
+"{" { strcpy(yylval.obj.value, yytext); return OFLOWER; }
+"}" { strcpy(yylval.obj.value, yytext); return CFLOWER; }
+"(" { strcpy(yylval.obj.value, yytext); return OBRACKET; }
+")" { strcpy(yylval.obj.value, yytext); return CBRACKET; }
+"[" { strcpy(yylval.obj.value, yytext); return OSQUARE; }
+"]" { strcpy(yylval.obj.value, yytext); return CSQUARE; }
+
+NEG { strcpy(yylval.obj.value, yytext); return NEG_OP; }
+AND { strcpy(yylval.obj.value, yytext); return AND_OP; }
+OR  { strcpy(yylval.obj.value, yytext); return OR_OP; }
+"." { strcpy(yylval.obj.value, yytext); return ACCESS_OP; }
+"++" { strcpy(yylval.obj.value, yytext); return INCREMENT_OP; }
+"--" { strcpy(yylval.obj.value, yytext); return DECREMENT_OP; }
+
+"+=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"-=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"*=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"/=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"%=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"|=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+"&=" { strcpy(yylval.obj.value, yytext); return ASSIGN_OP; }
+
+"<=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"<" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+">=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+">" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"==" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+"!=" { strcpy(yylval.obj.value, yytext); return RELATIVE_OP; }
+
+"-" { strcpy(yylval.obj.value, yytext); return SUB_OP; }
+"+" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"*" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"/" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"%" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"|" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+"&" {  strcpy(yylval.obj.value, yytext); return ARITHMETIC_OP; }
+
+"=" { strcpy(yylval.obj.value, yytext); return ASSIGN; }
+"TRUE"|"FALSE" { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "bool"); return BOOL_CONST; }
+{letter}({digit}|{letter}|_)* { strcpy(yylval.obj.value, yytext); return ID; }
+{constant}?[.]{constant}? { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "float"); return FLOAT_CONST; }
+{constant} { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "int"); return INT_CONST; }
+['][\\][n]['] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "char"); return CHAR_CONST; }
+['][^'\n]?['] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "char"); return CHAR_CONST; }
+["][^"\n]*["] { strcpy(yylval.obj.value, yytext); strcpy(yylval.obj.eletype, "string"); return STRING_CONST; }
+{blanks} {}
+. {fprintf(yyout,"Lexical Error at Line %d: %s (invalid token)\n",yylineno, yytext); return 0;}
 
 %%
 
@@ -55,24 +127,3 @@ void comment() {
 int yywrap(){
     return 1;
 }
-initialize_exp : increment_exp_1 ASSIGN conditional_exp SEMICOLON {
-                string temp_type = get_type($<obj.value>1);
-                if(!(type_checking(temp_type,$<obj.eletype>4))){
-                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
-           }
-           }
-               ;
-
-conditional_exp : NEG_OP conditional_exp {$<obj.eletype>$ = $<obj.eletype>2;}
-                | K {$<obj.eletype>$ = $<obj.eletype>1;}
-                ;
-K : K AND_OP I {
-                if(type_checking($<obj.eletype>1,$<obj.eletype>3)){
-                  $<obj.eletype>$ = $<obj.eletype>1;
-                }
-                else{
-                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
-                }
-              }
-  | I {$<obj.type>$ = $<obj.type>1;}
-  ;

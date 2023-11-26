@@ -1,0 +1,8 @@
+main (int) () {
+    point p,q;
+    p=[3,2];
+    q=[2,3];
+    circle c1= {p,5};
+    ellipse = {[5,3],4,1};
+    return 0;
+}

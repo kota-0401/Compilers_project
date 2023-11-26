@@ -199,4 +199,25 @@ int add_function_body(string name, string eletype) {
     f_unique* func = is_function_defined(name, eletype);
     if (func == NULL) {
         // If not in the table, add the function
-   
+     f_unique new_function;
+        func->name = name;
+        func->param_list = param_list;
+        func->return_type = "simple";
+        func->return_eletype = eletype;
+        func->is_defined = 1;
+        function_table.push_back(new_function);
+    }
+    else {
+        if (func->return_eletype == eletype) {
+            if (func->is_defined == 0) {
+                func->is_defined = 1;
+            }
+            else {
+                return 0; // ambiguating new definition of function
+            }
+        }
+        return 2; // ambiguating new declaration of function
+    }
+    return 1;
+}
+

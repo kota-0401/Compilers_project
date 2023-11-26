@@ -1,0 +1,7 @@
+main (int) (){
+    int l = 10;
+    hyperbola h = {[0,0],8.4,6}
+    string n = h.normal.equation([8.4,0]);
+    print n;
+    return 0;
+}

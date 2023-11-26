@@ -1,3 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+extern char* yytext;
+
+struct typerec {
+    string name;
+    int scope;
+    string type;
+    string eletype;
+    int no_of_dim;
+};
+
+struct param {
+    string name;
+    string eletype;
+};
+
+struct f_unique {
+    string name;
+    vector<param> param_list;
+    string return_type;
+    string return_eletype;
+    bool is_defined;
+};
+
 void create_symbol_table() {
     vector<typerec> new_table;  // Create a new empty symbol table
     local_symbol_table.push_back(new_table);  // Add the new symbol table to the vector

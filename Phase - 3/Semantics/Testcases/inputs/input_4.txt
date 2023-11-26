@@ -1,0 +1,20 @@
+normal_slope (float) (ellipse e,point p){
+    float s = 0;
+    if(c.is_point(p)){
+        line l = e.normal(p);
+        s = l.slope;
+    }
+    return s;
+}
+
+main (int) (){
+    ellipse e = {[0,0],5,3}
+    flaot s = normal_slope(e,[2,1]);
+    if(s < 0){
+        print("less than 0\n");
+    }
+    elif(s>0 AND s<5) {print( "more than 0 but less than 5\n");}
+    else{print ("greater than 5");}
+
+    return 0;
+}

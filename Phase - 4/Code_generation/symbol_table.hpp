@@ -62,6 +62,7 @@ string check_type_eletype(string name) {
     return "not_found";
 }
 
+
 bool type_checking(string from_type, string to_type) {
     // Define a set of valid type conversions for each type
     unordered_set<string> valid_conversions;
@@ -116,6 +117,8 @@ string charptr_to_string(const char* charPointer) {
         return string();
     }
 }
+
+// Function to check if a function is in the function table
 int is_function_declared(string name, string eletype) {
     for (int j = 0; j < local_symbol_table[0].size(); j++) {
             typerec entry = local_symbol_table[0][j];
@@ -199,7 +202,7 @@ int add_function_body(string name, string eletype) {
     f_unique* func = is_function_defined(name, eletype);
     if (func == NULL) {
         // If not in the table, add the function
-     f_unique new_function;
+        f_unique new_function;
         func->name = name;
         func->param_list = param_list;
         func->return_type = "simple";
@@ -221,3 +224,50 @@ int add_function_body(string name, string eletype) {
     return 1;
 }
 
+bool is_variable_declared(const string& variable) {
+    if (local_symbol_table.back().empty()) {
+        return false;  // No symbol tables or last symbol table is empty
+    }
+
+    const vector<typerec>& last_table = local_symbol_table.back();
+    for (const auto& entry : last_table) {
+        if (entry.name == variable) {
+            return true;  // Variable found in the last symbol table
+        }
+    }
+
+    return false;  // Variable not found in the last symbol table
+}
+
+int add_variable(string name) {
+    // Check if the variable is already in the table
+    if (is_variable_declared(name) == 0) {
+        // If not in the table, add the variable
+        vector<typerec>& last_table = local_symbol_table.back();
+        last_table.push_back({name, scope, type, eletype, no_of_dim});
+        return 0;
+    }
+    return 1; // ambiguating new declaration of variable
+}
+
+int insert_param(string name, string eletype) {
+    if (add_variable(name)) {
+        return 0;
+    }
+    no_of_dim++;
+    param_list.push_back({name, eletype});
+    return 1;
+}
+
+string get_type(string id) {
+    for (int i = local_symbol_table.size() - 1; i >= 0; i--) {
+        for (int j = 0; j < local_symbol_table[i].size(); j++) {
+            typerec entry = local_symbol_table[i][j];
+            if (entry.name == id) {
+                return entry.eletype;
+            }
+        }
+    }
+    // If the variable is not found, return an error type
+    return "error_type";
+}

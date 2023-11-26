@@ -55,3 +55,24 @@ void comment() {
 int yywrap(){
     return 1;
 }
+initialize_exp : increment_exp_1 ASSIGN conditional_exp SEMICOLON {
+                string temp_type = get_type($<obj.value>1);
+                if(!(type_checking(temp_type,$<obj.eletype>4))){
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+           }
+           }
+               ;
+
+conditional_exp : NEG_OP conditional_exp {$<obj.eletype>$ = $<obj.eletype>2;}
+                | K {$<obj.eletype>$ = $<obj.eletype>1;}
+                ;
+K : K AND_OP I {
+                if(type_checking($<obj.eletype>1,$<obj.eletype>3)){
+                  $<obj.eletype>$ = $<obj.eletype>1;
+                }
+                else{
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+                }
+              }
+  | I {$<obj.type>$ = $<obj.type>1;}
+  ;

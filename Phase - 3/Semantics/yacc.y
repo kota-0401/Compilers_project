@@ -298,3 +298,30 @@ while_body : OBRACKET conditional_exp CBRACKET {
 
 for_body_1 : initialize_exp  for_body_1_a SEMICOLON increment_exp CBRACKET scope_inc
            ;
+
+for_body_1_a : conditional_exp {
+                if(!(type_checking("bool",$<obj.eletype>1))){
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: bool" << endl;
+                }
+                }
+             ;
+
+for_body_2 : for_exp data_type dec_assign for_body_2_a for_body_1_a SEMICOLON increment_exp CBRACKET
+           | for_exp data_type for_body_2_b COLON for_body_2_c CBRACKET
+           ;
+
+for_body_2_a : SEMICOLON{eletype = "";}
+             ;
+
+for_body_2_b : ID {
+              if(add_variable($<obj.value>1)){
+                cout << "Semantic Error at Line " << yylineno << ": redeclaration of variable " << $<obj.value>1 << endl;
+              }
+              }
+             ;
+for_body_2_c : ID {
+              if(!(is_variable_declared($<obj.value>1))){
+                cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
+              }
+              }
+             ;

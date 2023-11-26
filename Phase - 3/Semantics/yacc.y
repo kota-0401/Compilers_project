@@ -242,6 +242,20 @@ dlist : d_list COMMA dlist
       | d_list
       ; 
 
+d_list : dec_assign
+       | ID L {
+           if(add_variable($<obj.value>1)){
+            cout << "Semantic Error at Line " << yylineno << ": redeclaration of variable " << $<obj.value>1 << endl;
+           }
+           no_of_dim = 0;
+           }
+       ;
+
+L : /*empty*/ {}
+  | L_1 INT_CONST L_2 L 
+  | L_1 L_3 CSQUARE L 
+  ;
+
 conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
                  ;
                            

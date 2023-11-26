@@ -256,6 +256,12 @@ L : /*empty*/ {}
   | L_1 L_3 CSQUARE L 
   ;
 
+L_1 : OSQUARE {type = "array";}
+    ;
+
+L_2 : CSQUARE {no_of_dim++;}
+    ;
+
 L_3 : ID {
            if(!(is_variable_declared($<obj.value>1))){
             cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
@@ -325,3 +331,249 @@ for_body_2_c : ID {
               }
               }
              ;
+dec_assign : dec_assign_1 ASSIGN conditional_exp {
+                $<obj.eletype>1 = string_to_char(eletype);
+                if(!(type_checking($<obj.eletype>1,$<obj.eletype>3))){
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+                }
+              }
+           ;
+dec_assign_1 : ID {
+           if(add_variable($<obj.value>1)){
+            cout << "Semantic Error at Line " << yylineno << ": redeclaration of variable " << $<obj.value>1 << endl;
+           }
+           else {
+            $<obj.eletype>$ = $<obj.eletype>1;
+           }
+           }
+increment_exp : ID L ASSIGN_OP conditional_exp {
+                                     if($<obj.eletype>4 != $<obj.eletype>1){
+                                      cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+                                     }
+                                     }
+              | increment_exp_1 INCREMENT_OP
+              | increment_exp_1 DECREMENT_OP 
+              ;
+
+increment_exp_1 : ID L {
+           if(!(is_variable_declared($<obj.value>1))){
+            cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
+           }
+           no_of_dim = 0;
+           }
+               ;
+
+for_exp : OBRACKET {create_symbol_table();}
+        ;
+
+scope_inc : OFLOWER {create_symbol_table();}
+          ;
+
+scope_dec : CFLOWER {delete_symbol_table();}
+          ;
+
+initialize_exp : increment_exp_1 ASSIGN conditional_exp SEMICOLON {
+                string temp_type = get_type($<obj.value>1);
+                if(!(type_checking(temp_type,$<obj.eletype>4))){
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+           }
+           }
+               ;
+
+conditional_exp : NEG_OP conditional_exp {$<obj.eletype>$ = $<obj.eletype>2;}
+                | K {$<obj.eletype>$ = $<obj.eletype>1;}
+                ;
+K : K AND_OP I {
+                if(type_checking($<obj.eletype>1,$<obj.eletype>3)){
+                  $<obj.eletype>$ = $<obj.eletype>1;
+                }
+                else{
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+                }
+              }
+  | I {$<obj.type>$ = $<obj.type>1;}
+  ;
+I : I OR_OP J {
+                if(type_checking($<obj.eletype>1,$<obj.eletype>3)){
+                  $<obj.eletype>$ = $<obj.eletype>1;
+                }
+                else{
+                  cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+                }
+              }
+  | J {$<obj.type>$ = $<obj.type>1;}
+  ; 
+
+J : E {$<obj.eletype>$ = $<obj.eletype>1;}
+  | OSQUARE E COMMA E CSQUARE {
+                                if (type_checking($<obj.eletype>2 , "float") && type_checking($<obj.eletype>4 , "float")){
+                                  $<obj.eletype>$ = string_to_char("point");}
+                                else{yyerror("1");}
+                              }
+
+  | OFLOWER J COMMA J CFLOWER {
+                                if (type_checking($<obj.eletype>2 , "point") && type_checking($<obj.eletype>4 , "float")){
+                                  $<obj.eletype>$ = string_to_char("line_circle");} 
+                                else if(type_checking($<obj.eletype>2 , "point") && type_checking($<obj.eletype>4 , "float")){
+                                  $<obj.eletype>$ = string_to_char("parabola");}
+                                else {yyerror("2");}
+                              }
+  
+  | OFLOWER J COMMA E COMMA E CFLOWER {
+                                if (type_checking($<obj.eletype>2 , "point") && type_checking($<obj.eletype>4 , "float") && type_checking($<obj.eletype>6 , "float")){
+                                  $<obj.eletype>$ = string_to_char("ellipse_hyperbola");} 
+                                else {yyerror("3");}
+                              }
+  ;
+E : E ARITHMETIC_OP M {
+               if(!type_checking($<obj.eletype>1,$<obj.eletype>3)){
+                cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+               } 
+               else{
+                $<obj.eletype>$ = $<obj.eletype>1;
+               }
+              }
+  | E SUB_OP M {
+               if(!type_checking($<obj.eletype>1,$<obj.eletype>3)){
+                cout << "Semantic Error at Line" << yylineno << ": expected rhs of type: " << $<obj.eletype>1 << endl;
+               } 
+               else{
+                $<obj.eletype>$ = $<obj.eletype>1;
+               }
+              }
+  | SUB_OP M {$<obj.eletype>$ = $<obj.eletype>2;} 
+  | M {$<obj.eletype>$ = $<obj.eletype>1;}
+  ;
+
+M : M RELATIVE_OP N {$<obj.eletype>$ = string_to_char("bool");}
+  | N {$<obj.eletype>$ = $<obj.eletype>1;}
+  ;
+
+N : OBRACKET conditional_exp CBRACKET {$<obj.eletype>$ = $<obj.eletype>2;}
+  | ID L {$<obj.eletype>$ = string_to_char(get_type($<obj.eletype>1));}
+  | call_stmt {$<obj.eletype>$ = $<obj.eletype>1;}
+  | INT_CONST {$<obj.eletype>$ = string_to_char("int");}
+  | FLOAT_CONST {$<obj.eletype>$ = string_to_char("float");}
+  | CHAR_CONST {$<obj.eletype>$ = string_to_char("char");}
+  | STRING_CONST {$<obj.eletype>$ = string_to_char("string");}
+  | NULL_ {$<obj.eletype>$ = string_to_char("NULL");}
+  | BOOL_CONST {$<obj.eletype>$ = string_to_char("bool");}
+  ;
+
+call_stmt : call_stmt_1 OBRACKET call_list CBRACKET {    string temp = check_type_eletype($<obj.value>1);
+                                                if(check_type_eletype($<obj.value>1) == "not_found"){
+                                                  cout << "Semantic Error at Line" << yylineno << ": function doe not exist" << endl;
+                                                }
+                                                else {
+                                                  $<obj.type>$ = string_to_char(temp);
+                                                }
+                                              call_arg_list.clear();
+                                            }
+          | call_stmt_1 OBRACKET CBRACKET {    string temp = check_type_eletype($<obj.value>1);
+                                                if(check_type_eletype($<obj.value>1) == "not_found"){
+                                                  cout << "Semantic Error at Line" << yylineno << ": function doe not exist" << endl;
+                                                }
+                                                else {
+                                                  $<obj.type>$ = string_to_char(temp);
+                                                }
+                                            }
+          | call_stmt_2 ACCESS_OP property {$<obj.eletype>$ = $<obj.eletype>3;}
+
+call_stmt_1 : ID{
+              if(!(is_variable_declared($<obj.value>1))){
+                cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
+              }
+              }
+            ;
+
+call_stmt_2 : ID L{
+           if(!(is_variable_declared($<obj.value>1))){
+            cout << "Semantic Error at Line " << yylineno << ": undefined variable " << $<obj.value>1 << endl;
+           }
+           else {
+            if(($<obj.eletype>1 != "point") && ($<obj.eletype>1 != "line") && ($<obj.eletype>1 != "circle") && ($<obj.eletype>1 !="parabola") && ($<obj.eletype>1 !="ellipse") && ($<obj.eletype>1 !="hyperbola")){
+              cout << "Semantic Error at Line " << yylineno << ": invalid access type" << endl;
+            }
+           }
+           no_of_dim = 0;
+           }
+            ;
+
+property : IS_POINT OBRACKET E CBRACKET {
+                       if($<obj.eletype>3 != "point"){
+                        cout << "Semantic Error at Line " << yylineno << ": invalid argument type" << endl;
+                       }
+                       else {
+                        $<obj.eletype>$ = string_to_char("bool");
+                       }
+                       }
+         | EQUATION OBRACKET CBRACKET{$<obj.eletype>$ = string_to_char("string");}
+         | ECCENTRICITY OBRACKET CBRACKET{$<obj.eletype>$ = string_to_char("float");}
+         | TANGENT OBRACKET E CBRACKET {
+                       if($<obj.eletype>3 != "point"){
+                        cout << "Semantic Error at Line " << yylineno << ": invalid argument type" << endl;
+                       }
+                       else {
+                        $<obj.eletype>$ = string_to_char("line");
+                       }
+                       } 
+         | NORMAL OBRACKET E CBRACKET {
+                       if($<obj.eletype>3 != "point"){
+                        cout << "Semantic Error at Line " << yylineno << ": invalid argument type" << endl;
+                       }
+                       else {
+                        $<obj.eletype>$ = string_to_char("line");
+                       }
+                       }
+         | CENTRE{$<obj.eletype>$ = string_to_char("point");}
+         | RADIUS{$<obj.eletype>$ = string_to_char("float");}
+         | XCOR{$<obj.eletype>$ = string_to_char("float");}
+         | YCOR{$<obj.eletype>$ = string_to_char("float");}
+         | SLOPE{$<obj.eletype>$ = string_to_char("float");}
+         ;
+
+call_list : conditional_exp COMMA call_list {call_arg_list.push_back($<obj.value>1);}
+          | conditional_exp {call_arg_list.push_back($<obj.value>1);}
+          ;
+
+print_stmt : PRINT OBRACKET E CBRACKET SEMICOLON
+           ;
+
+input_stmt : INPUT OBRACKET call_stmt_1 CBRACKET SEMICOLON
+           ;
+
+data_type : INT {$<obj.eletype>$ = string_to_char("int"); eletype = "int";}
+          | CHAR {$<obj.eletype>$ = string_to_char("char"); eletype = "char";}
+          | STRING {$<obj.eletype>$ = string_to_char("string"); eletype = "string";}
+          | BOOL {$<obj.eletype>$ = string_to_char("bool"); eletype = "bool";}
+          | POINT {$<obj.eletype>$ = string_to_char("point"); eletype = "point";}
+          | FLOAT {$<obj.eletype>$ = string_to_char("float"); eletype = "float";}
+          | LINE {$<obj.eletype>$ = string_to_char("line"); eletype = "line";}
+          | CIRCLE {$<obj.eletype>$ = string_to_char("circle"); eletype = "circle";}
+          | ELLIPSE {$<obj.eletype>$ = string_to_char("ellipse"); eletype = "ellipse";}
+          | PARABOLA {$<obj.eletype>$ = string_to_char("parabola"); eletype = "parabola";}
+          | HYPERBOLA {$<obj.eletype>$ = string_to_char("hyperbola"); eletype = "hyperbola";}
+          ;
+%%
+
+void yyerror(const char *a) {
+	printf("Syntax Error : In line number %d\n",yylineno);
+	fprintf(parsefile," %s\n",a);
+}
+
+
+
+int main(int argc ,char * argv[]){
+    char inp_file[100],tok[100],parse[100],out_file[100];
+
+    sprintf(inp_file,"inp_1.txt");
+
+    yyin = fopen(inp_file,"r");
+
+	int i = yyparse();
+
+	if(i) printf("Failure\n");
+	else printf("Success\n");
+
+	return 0;
+}

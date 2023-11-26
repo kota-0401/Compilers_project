@@ -116,3 +116,107 @@ string charptr_to_string(const char* charPointer) {
         return string();
     }
 }
+int is_function_declared(string name, string eletype) {
+    for (int j = 0; j < local_symbol_table[0].size(); j++) {
+            typerec entry = local_symbol_table[0][j];
+            if (entry.name == name) {
+                return 2;
+            }
+    }
+    for (const auto& func : function_table) {
+        if (func.name == name && func.param_list.size() == param_list.size()) {
+            bool params_match = true;
+
+            // Check if the types of parameters match
+            for (int i = 0; i < param_list.size(); i++) {
+                if (func.param_list[i].eletype != param_list[i].eletype) {
+                    params_match = false;
+                    break;
+                }
+            }
+
+            if (params_match) {
+                if (func.return_eletype == eletype) {
+                    return 1; // Function found in table
+                }
+                return 2; // ambiguating new declaration of function
+            }
+        }
+    }
+    return 0; // Function not found in table
+}
+
+f_unique* is_function_defined(string name, string eletype) {
+    f_unique* matching_function = NULL;  // Pointer to the matching function
+    for (int j = 0; j < local_symbol_table[0].size(); j++) {
+            typerec entry = local_symbol_table[0][j];
+            if (entry.name == name) {
+                matching_function->return_type = "complex";
+                return matching_function;
+            }
+    }
+    for (auto& func : function_table) {
+        if (func.name == name && func.param_list.size() == param_list.size()) {
+            bool params_match = true;
+
+            // Check if the types of parameters match
+            for (int i = 0; i < param_list.size(); i++) {
+                if (func.param_list[i].eletype != param_list[i].eletype) {
+                    params_match = false;
+                    break;
+                }
+            }
+            matching_function = &func;
+            return matching_function;
+        }
+    }
+    return NULL; // Function not found in table
+}
+
+// Function to add a function to the function table
+int add_function(string name, string eletype) {
+    // Check if the function is already in the table
+    int c = is_function_declared(name, eletype);
+    if (c == 0) {
+        // If not in the table, add the function
+        f_unique new_function;
+        new_function.name = name;
+        new_function.param_list = param_list;
+        new_function.return_type = "simple";
+        new_function.return_eletype = eletype;
+        new_function.is_defined = 0;
+        function_table.push_back(new_function);
+        return 0;
+    }
+    else if (c == 1) {
+        return 1;// ambiguating new declaration of function
+    }
+    return 0;
+}
+
+int add_function_body(string name, string eletype) {
+    // Check if the function is already in the table
+    f_unique* func = is_function_defined(name, eletype);
+    if (func == NULL) {
+        // If not in the table, add the function
+        f_unique new_function;
+        func->name = name;
+        func->param_list = param_list;
+        func->return_type = "simple";
+        func->return_eletype = eletype;
+        func->is_defined = 1;
+        function_table.push_back(new_function);
+    }
+    else {
+        if (func->return_eletype == eletype) {
+            if (func->is_defined == 0) {
+                func->is_defined = 1;
+            }
+            else {
+                return 0; // ambiguating new definition of function
+            }
+        }
+        return 2; // ambiguating new declaration of function
+    }
+    return 1;
+}

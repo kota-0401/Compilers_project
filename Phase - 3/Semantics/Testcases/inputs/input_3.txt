@@ -1,0 +1,18 @@
+main(int) (){
+    point p =[0,3];
+    for(int i =0;i<5;i++){
+        p.xcor ++;
+        circle c = {p,5};
+        print(c.equation);
+    }
+    int l =5;
+    while(l>0){
+        p.xcor --;
+        l--;
+    }
+    circle c = {p,10};
+    c.radius++;
+    ellipse e ={p,6,4}
+    float a = e.eccentricity;
+    return 0;
+}

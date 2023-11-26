@@ -224,6 +224,24 @@ stmt : scope_inc stmt scope_dec stmt
      | /*empty*/
      ;
 
+call : call_stmt SEMICOLON {
+                     if ($<obj.eletype>1 == "") {
+                      cout << "Semantic Error at Line" << yylineno << ": expects an assignment of " << $<obj.value>1 << endl; 
+                     }
+                     }
+     ;
+
+R : RETURN conditional_exp SEMICOLON {$<obj.eletype>$ = $<obj.eletype>2;}
+  | RETURN SEMICOLON {$<obj.eletype>$ = string_to_char("");}
+  ;
+
+dec_stmt : data_type dlist SEMICOLON  {eletype = "";}
+         ;
+      
+dlist : d_list COMMA dlist 
+      | d_list
+      ; 
+
 conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
                  ;
                            

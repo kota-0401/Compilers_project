@@ -1,3 +1,215 @@
+%{
+#include <bits/stdc++.h>
+#include "symbol_table.cpp"
+extern FILE* yyin;
+extern FILE *tokfile, *parsefile;
+
+extern int yylineno;
+int yylex(void);
+void yyerror(const char *a);
+%}
+
+%union {
+	struct variable_name {
+    char* value;
+    char* type ;
+    char* eletype;
+	} obj; 
+}
+
+%token <obj> VOID
+%token <obj> INT
+%token <obj> FLOAT
+%token <obj> CHAR
+%token <obj> STRING
+%token <obj> BOOL
+%token <obj> POINT
+%token <obj> LINE
+%token <obj> CIRCLE
+%token <obj> PARABOLA
+%token <obj> HYPERBOLA
+%token <obj> ELLIPSE
+
+%token <obj> NULL_
+%token <obj> IF
+%token <obj> ELIF
+%token <obj> ELSE
+%token <obj> CONTINUE
+%token <obj> BREAK
+%token <obj> RETURN
+%token <obj> FOR
+%token <obj> WHILE
+%token <obj> PRINT
+%token <obj> INPUT
+
+%token <obj> EQUATION
+%token <obj> ECCENTRICITY
+%token <obj> TANGENT
+%token <obj> NORMAL
+%token <obj> IS_POINT
+%token <obj> CENTRE
+%token <obj> RADIUS
+%token <obj> XCOR
+%token <obj> YCOR
+%token <obj> SLOPE
+
+
+
+%token <obj> COMMA
+%token <obj> SEMICOLON
+%token <obj> COLON
+
+%token <obj> OFLOWER
+%token <obj> CFLOWER
+%token <obj> OBRACKET
+%token <obj> CBRACKET
+%token <obj> OSQUARE
+%token <obj> CSQUARE
+
+%token <obj> NEG_OP
+%token <obj> AND_OP
+%token <obj> OR_OP
+%token <obj> ACCESS_OP
+%token <obj> INCREMENT_OP
+%token <obj> DECREMENT_OP
+
+%token <obj> ASSIGN_OP
+
+%token <obj> RELATIVE_OP
+
+
+%token <obj> SUB_OP
+%token <obj> ARITHMETIC_OP
+
+%token <obj> ASSIGN
+%token <obj> ID
+%token <obj> FLOAT_CONST
+%token <obj> INT_CONST
+%token <obj> CHAR_CONST
+%token <obj> STRING_CONST
+%token <obj> BOOL_CONST
+
+%type <obj> N E
+%type <obj> M S L J 
+%type <obj> function_declarations function_definitions par_list dec_stmt data_type func_exp L_1
+
+
+%start S
+
+%%
+/*productions*/
+S : function_declarations S
+  | function_definitions S
+  | dec_stmt S 
+  | /*empty*/{}
+  ;
+
+function_declarations : func_exp OBRACKET data_type CBRACKET OBRACKET par_list CBRACKET SEMICOLON {
+                                                                    add_function_value = add_function($<obj.value>1, $<obj.value>3); 
+                                                                    if(add_function_value) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    param_list.clear();
+                                                                    delete_symbol_table();
+                                                                    }
+                      | func_exp OBRACKET data_type CBRACKET OBRACKET CBRACKET SEMICOLON {
+                                                                    add_function_value = add_function($<obj.value>1, $<obj.value>3); 
+                                                                    if(add_function_value) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    delete_symbol_table();
+                                                                    }                      
+                      | func_exp OBRACKET VOID CBRACKET OBRACKET par_list CBRACKET SEMICOLON {
+                                                                    add_function_value = add_function($<obj.value>1, ""); 
+                                                                    if(add_function_value) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    param_list.clear();
+                                                                    delete_symbol_table();
+                                                                    }                      
+                      | func_exp OBRACKET VOID CBRACKET OBRACKET CBRACKET SEMICOLON {
+                                                                    add_function_value = add_function($<obj.value>1, ""); 
+                                                                    if(add_function_value) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    delete_symbol_table();
+                                                                    }                      
+                      ;
+
+function_definitions : func_exp OBRACKET data_type CBRACKET OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER {
+                                                                    add_function_value = add_function_body($<obj.value>1, $<obj.value>3); 
+                                                                    if(add_function_value == 2) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    else if(add_function_value == 0) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": redefinition of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    param_list.clear();
+                                                                    delete_symbol_table();
+                                                                    }                     
+                     | func_exp OBRACKET data_type CBRACKET OBRACKET CBRACKET OFLOWER stmt CFLOWER {
+                                                                    add_function_value = add_function_body($<obj.value>1, $<obj.value>3); 
+                                                                    if(add_function_value == 2) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    else if(add_function_value == 0) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": redefinition of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    delete_symbol_table();
+                                                                    }                      
+                     | func_exp OBRACKET VOID CBRACKET OBRACKET par_list CBRACKET OFLOWER stmt CFLOWER {
+                                                                    add_function_value = add_function_body($<obj.value>1, ""); 
+                                                                    if(add_function_value == 2) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    else if(add_function_value == 0) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": redefinition of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    param_list.clear();
+                                                                    delete_symbol_table();
+                                                                    }                       
+                     | func_exp OBRACKET VOID CBRACKET OBRACKET CBRACKET OFLOWER stmt CFLOWER {
+                                                                    add_function_value = add_function_body($<obj.value>1, ""); 
+                                                                    if(add_function_value == 2) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": ambiguating new declaration of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    else if(add_function_value == 0) {
+                                                                      cout << "Semantic Error at Line" << yylineno << ": redefinition of function" << $<obj.value>1 << endl; 
+                                                                    } 
+                                                                    add_function_value = 0; 
+                                                                    delete_symbol_table();
+                                                                    } 
+                     ;
+
+func_exp : ID {
+            if (is_variable_declared($<obj.value>1)) {
+              cout << "Semantic Error at Line" << yylineno << ": redeclaration of global variable " << $<obj.value>1 << endl; 
+            }
+            else {
+              create_symbol_table();
+            }
+            }
+         ;
+
+par_list : data_type ID COMMA par_list {
+                        if (insert_param($<obj.value>2, $<obj.value>1) == 0) {
+                          cout << "Semantic Error at Line" << yylineno << ": redeclaration of function parameter " << $<obj.value>1 << endl; 
+                        }
+                        }
+         | data_type ID {
+                        if (insert_param($<obj.value>2, $<obj.value>1) == 0) {
+                          cout << "Semantic Error at Line" << yylineno << ": redeclaration of function parameter " << $<obj.value>1 << endl; 
+                        }
+                        }
+         ;
+
 conditional_stmt : IF while_body scope_inc stmt scope_dec elif_stmt  
                  ;
                            
